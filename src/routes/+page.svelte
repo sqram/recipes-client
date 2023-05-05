@@ -28,7 +28,7 @@
           <article class="search-section" >
             <div class="ribbon-container"></div>
             <p>
-              search the most popular websites for your favorite recipes
+              search the most popular websites for your favorite recipes. Don't see your favorite site? <a href="#">suggest it!</a>
             </p>
             <SearchInput />
           </article>
@@ -50,7 +50,7 @@
           {#each $sites as site}
             {#if site.isChecked}
               {#if site.isFetching}
-                <Loading siteName={site.name}... />
+                <Loading siteName={site.name} />
               {:else if site.recipes.length}
                 <SiteRecipesContainer result={site} />
               {/if}
@@ -111,9 +111,16 @@
       display: flex;
       flex-direction: column;
     }
+
     main > h1 {
       text-align: center;
       margin-top: 5%;
+    }
+
+    .search-section a {
+      color: indianred;
+      text-decoration: none;
+      border-bottom: 1px dotted indianred;
     }
     article {
       margin-top: 13%;
