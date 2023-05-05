@@ -1,7 +1,8 @@
 <script>
 	// @ts-nocheck
 
-	import { currentRecipe, searchResults, isSidepanelVisible } from '../stores';
+	import { currentRecipe, isSidepanelVisible, sites } from '../stores';
+
 
 	/**
 	 * This component is a container that holds all the recipes
@@ -14,20 +15,20 @@
 
 	function handleOnClick(e) {
 		const id = e.target.dataset.id;
-
-		let re = $searchResults
+		let re =  $sites.map(site => site.recipes)
 			.map((sites) => sites.recipes.map((r) => r))
 			.flat()
 			.find((r) => r.id === id);
 		console.log(re);
 		isSidepanelVisible.set(true);
-
 		$currentRecipe = { ...re };
 	}
 </script>
 
 <section>
-	<div class="site-name">{result.siteName} <span>{result.recipes.length} recipes found</span></div>
+
+
+	<div class="site-name"><span>{result.name}</span> <span></span> {result.recipes.length} recipes found</div>
 	<div class="site-recipes">
 		{#each result.recipes as recipe}
 			<!-- svelte-ignore a11y-click-events-have-key-events -->

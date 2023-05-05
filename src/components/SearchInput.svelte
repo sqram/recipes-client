@@ -1,35 +1,39 @@
 <script>
   // @ts-nocheck
-  import { searchResults } from "../stores";
+  import { sites } from "../stores";
 
-  let searchTerm = null
+  let searchTerm = ""
 
-  async function handleSubmit(e) {
+  const fetchRecipe = i => new Promise(resolve => {
+    $sites[i].isFetching = true;
+    const response = fetch(`http://localhost:3001/recipe/${$sites[i].siteId}?search=${searchTerm}`)
+    .then(data => data.json())
+    .then(data => {
+      console.log(data)
+      $sites[i].isFetching = false
+      $sites[i].recipes = data.recipes
+    })
+  });
+
+  function handleSubmit(e) {
+    if (!searchTerm.trim().length) return;
+
     e.preventDefault()
-    // Clear previous results
-    searchResults.set([])
-    const response = await fetch(`http://localhost:3001/recipe/minimalbaker?search=${searchTerm}`);
-    const data = await response.json();
-    $searchResults = [...$searchResults, { ...data }]
-
-    const response2 = await fetch(`http://localhost:3001/recipe/feelgoodfoodie?search=${searchTerm}`);
-    const data2 = await response2.json();
-    $searchResults = [...$searchResults, { ...data2 }]
-
-    const response3 = await fetch(`http://localhost:3001/recipe/addapinch?search=${searchTerm}`);
-    const data3 = await response3.json();
-    $searchResults = [...$searchResults, { ...data3 }]
-
-    const response4 = await fetch(`http://localhost:3001/recipe/foodnetwork?search=${searchTerm}`);
-    const data4 = await response4.json();
-    $searchResults = [...$searchResults, { ...data4 }]
+    for (let i = 0; i < $sites.length; i++) {
+      if ($sites[i].isChecked) {
+        fetchRecipe(i)
+      }
+      // Clear previous results
+      $sites[i].recipes = []
+    }
   }
 
 
 </script>
 
 <form on:submit={handleSubmit}>
-  <h1>Search for recipe:</h1>
+  <!-- <h1>Search for a recipe:</h1> -->
+  <h1>i want to cook:</h1>
   <label>
     <input type="text" placeholder='ie, banana bread' bind:value={searchTerm}>
     <input type="submit" value="ok go">
@@ -38,17 +42,7 @@
 
 <style>
 
-section p img:first-of-type {
-  position: absolute;
-  left: 20%;
-  top: -124.9px;
-  box-shadow: 0px 5px 5px rgba(0,0,0,0.2);
-}
-img:last-of-type {
-  position: absolute;
-  left: 20%;
-  top: 70px;
-}
+
 form {
   padding-left: 50px;
   box-sizing: border-box;
