@@ -12,16 +12,16 @@
 	export let result;
 
 	//$: recipes = $searchResults
-
+	$: sr = $sites.map(site => site.recipes)
+	console.log(sr)
 	function handleOnClick(e) {
 		const id = e.target.dataset.id;
-		let re =  $sites.map(site => site.recipes)
-			.map((sites) => sites.recipes.map((r) => r))
+		let recipe =  $sites.map(site => site.recipes)
 			.flat()
 			.find((r) => r.id === id);
-		console.log(re);
+		$currentRecipe = { ...recipe };
 		isSidepanelVisible.set(true);
-		$currentRecipe = { ...re };
+		console.log(recipe)
 	}
 </script>
 
