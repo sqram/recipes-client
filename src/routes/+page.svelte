@@ -51,7 +51,7 @@
             {#if site.isChecked}
               {#if site.isFetching}
                 <Loading siteName={site.name} />
-              {:else if site.recipes.length}
+              {:else if site.recipes?.length}
                 <SiteRecipesContainer result={site} />
               {/if}
             {/if}
@@ -93,7 +93,7 @@
     }
     nav a {
       text-decoration: none;
-      padding: 5px 10px;
+      padding: 5px 14px;
       margin: 5px;
       border-radius: 15px;
       color: #eee;
@@ -143,7 +143,7 @@
       height: 411px;
       top: -77px;
       background-image: url(/img/blue/ribbon-top.png), url(/img/blue/ribbon-bottom.png);
-      background-position: left top, left bottom;
+      background-position: left top, left 190px;
       background-repeat: no-repeat, no-repeat;
     }
 

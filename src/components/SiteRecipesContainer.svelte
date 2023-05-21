@@ -34,26 +34,20 @@
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<article class="recipe-wrap" on:click={handleOnClick} data-id={recipe.id}>
 				<div class="thumb">
-					<img src={recipe.thumb} alt="finished recipe" />
+					<img src={recipe.images[0]} alt="recipe image" />
 				</div>
         <div class="info-area">
           <div class="title">{recipe.title}</div>
           <div class="info">
               <div class="times">
+								{#each recipe.times as time}
                 <div>
-                  <span>Prep time:</span>
-                  <span>{recipe.prepTime} mins</span>
-                </div>
-                <div>
-                  <span>Cook time:</span>
-                  <span>{recipe.cookTime} mins</span>
-                </div>
-                <div>
-                  <span>Total time:</span>
-                  <span>{parseInt(recipe.prepTime) + parseInt(recipe.cookTime)} mins</span>
-                </div>
+									{#each time as text}
+										<span>{text}</span>
+									{/each}
+								</div>
+								{/each}
               </div>
-
               <div class="servings-wrap">
                 <span>Servings:</span>
                 <span>{recipe.servings}</span>
@@ -139,9 +133,9 @@
     display: flex;
   }
   .times > div {
-    margin-right: 10px;
+    margin-right: 20px;
   }
-  .times > div > span:last-child, .servings-wrap > span:last-child {
+  .times > div > span:nth-child(2), .servings-wrap > span:last-child {
     color: #eee;
   }
 
