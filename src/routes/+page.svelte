@@ -1,13 +1,24 @@
 <script>
   // @ts-nocheck
+  import { onMount } from 'svelte';
   import { isSidepanelVisible, sites } from "../stores";
-  import Nav from '../components/Nav.svelte'
+ // import Nav from '../components/Nav.svelte'
   import SearchInput from '../components/SearchInput.svelte'
   import SiteRecipesContainer from '../components/SiteRecipesContainer.svelte'
   import SidePanel from '../components/SidePanel.svelte'
   import { slide } from 'svelte/transition';
-  import { elasticOut } from 'svelte/easing'
 	import Loading from '../components/Loading.svelte'
+
+  onMount(async () => {
+    // If user presses ESC, close sidepanel
+    document.addEventListener('keydown', (e) => {
+      switch(e.key) {
+        case 'Escape':
+          $isSidepanelVisible = false;
+          break;
+        }
+    })
+  })
   </script>
 
   <html lang="en">
