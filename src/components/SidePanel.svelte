@@ -1,13 +1,33 @@
 <script>
+import {afterUpdate, beforeUpdate, onDestroy, onMount, tick} from 'svelte';
+
+
 // @ts-nocheck
 
   import { currentRecipe, isSidepanelVisible } from "../stores";
 
+  let activeImg = null
   function handleCloseClick() {
     $isSidepanelVisible = false
   }
+
+  async function handleThumbnailClick(e) {
+    await tick();
+    activeImg = e.target.src
+  }
+  beforeUpdate(async () =>   {
+    console.log('before update: ' + activeImg)
+    activeImg = null
+  })
+
+  afterUpdate(async () =>   {
+    console.log('AFTER update ' + activeImg)
+
+  })
+
 </script>
 <div class="sidepanel">
+  <!-- svelte-ignore a11y-click-events-have-key-events -->
   <span class="close" on:click={handleCloseClick}>close</span>
   <div class="title">{ $currentRecipe.title}</div>
   <section>
@@ -19,7 +39,12 @@
             {#if ingredient.type !== 'item'}
              <li class="ingredientSection"><b>{ ingredient.value }</b></li>
             {:else}
-              <li class="item">{ ingredient.value }</li>
+              <li class="item">
+                <label>
+                  <input type="checkbox">
+                  { ingredient.value }
+                </label>
+              </li>
             {/if}
         {/each}
       </ul>
@@ -35,10 +60,20 @@
     </div>
 
     <div class="images">
-      {#each $currentRecipe?.images ?? [] as img}
-        <img src={img} alt="recipe thumbnail"/>
-      {/each}
+      <h3>Images:</h3>
+        <div>
+          {#each $currentRecipe?.images ?? [] as img}
+            <!-- svelte-ignore a11y-click-events-have-key-events -->
+            <img src={img} alt="recipe thumbnail" on:click={handleThumbnailClick}/>
+          {/each}
+        </div>
     </div>
+
+    {#if activeImg}
+      <div class="original-size-img">
+        <img src={activeImg} alt="recipe pic">
+      </div>
+    {/if}
   </section>
 </div>
 
@@ -52,7 +87,7 @@
     position: fixed;
     right: 0;
     top: 0;
-    border-left: 2px solid black;
+    border-left: 10px solid salmon;
     display: flex;
     flex-direction: column;;
     font-family: catamaran;
@@ -108,7 +143,7 @@
     height: 145px;
     text-align: center;
     /* border-radius: 30px; */
-    left: -37px;
+    left: -35px;
     top: 354px;
     /* box-shadow: 2px 2px #db9595; */
     cursor: pointer;
@@ -117,7 +152,7 @@
     letter-spacing: -11px;
     text-transform: uppercase;
     border: 4px solid salmon;
-    background: indianred;
+    background: salmon;
     color: #000;
     font-weight: bold;
   }
@@ -125,7 +160,7 @@
     padding: 6px;
   }
   .title {
-    background: indianred;
+    background: salmon;
     color: #333;
     padding-left: 6px;
     font-size: 120%;;
@@ -138,6 +173,10 @@
     margin: 10px 10px 10px -17px;
   }
 
+  ul {
+    list-style: none;;
+  }
+
   .original-url {
     color: #333;
     border-bottom: 1px dotted #333;
@@ -147,16 +186,27 @@
     float: right;
   }
 
-  .images {
+
+  .images > div {
+    display: flex;
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
   }
-  .images img {
+  .images  img {
     margin: 5px;
     border: 3px solid indianred;
     width: 75px;
     height: 75px;
+  }
+
+  .original-size-img {
+    display: flex;
+    justify-content: center;
+    max-height: 400px;
+  }
+  .original-size-img img {
+    max-height: 400px;
   }
 </style>
