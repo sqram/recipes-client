@@ -18,7 +18,7 @@
   <span class="close" on:click={handleCloseClick}>close</span>
   <div class="title">{ $currentRecipe.title}</div>
   <section>
-    <a class="original-url" href={$currentRecipe.url}>see this recipe in the original website</a>
+    <a class="original-url" href={$currentRecipe.url} target="_blank">see this recipe in the original website</a>
     <div class="ingredients">
       <h3>Ingredients:</h3>
       <ul>
@@ -195,10 +195,11 @@
   }
 
   div.instructions {
-    line-height: 2;
+    line-height: 1.5
   }
 
   div.instructions > ul > li {
     list-style: auto;
+    margin-bottom: 15px;
   }
 </style>

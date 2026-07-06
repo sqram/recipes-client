@@ -18,6 +18,20 @@ export const currentRecipe = writable({
 
 export const isSidepanelVisible = writable(false)
 
+export const suggestSiteModalState = writable({
+  isOpen: false,
+  formValue: '',
+  captchaChecked: false
+});
+
+export function openSuggestSiteModal() {
+  suggestSiteModalState.set({ isOpen: true, formValue: '', captchaChecked: false });
+}
+
+export function closeSuggestSiteModal() {
+  suggestSiteModalState.set({ isOpen: false, formValue: '', captchaChecked: false });
+}
+
 export const sites = writable([
   {
     name: "Minimalist Baker",

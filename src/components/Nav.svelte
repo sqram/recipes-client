@@ -1,9 +1,20 @@
 <script>
+// @ts-nocheck
+
+  import { suggestSiteModalState, closeSuggestSiteModal, openSuggestSiteModal } from '../stores';
+
   let isFeedbackOpen = false;
   let feedbackMessage = '';
+  let feedbackCaptchaChecked = false;
 
   function openFeedback() {
     isFeedbackOpen = true;
+    isSuggestSiteOpen = false;
+  }
+
+  function openSuggestSite() {
+    isFeedbackOpen = false;
+    openSuggestSiteModal();
   }
 
   function closeFeedback() {
@@ -11,17 +22,41 @@
     feedbackMessage = '';
   }
 
-  function handleSubmit(event) {
+  function closeSuggestSite() {
+    closeSuggestSiteModal();
+  }
+
+
+  function handleFeedbackSubmit(event) {
+    if (feedbackCaptchaChecked) {
+      event.preventDefault();
+      return;
+    }
+
     event.preventDefault();
     closeFeedback();
+  }
+
+  function handleSuggestSiteSubmit(event) {
+    if ($suggestSiteModalState.captchaChecked) {
+      event.preventDefault();
+      return;
+    }
+
+    event.preventDefault();
+    closeSuggestSite();
   }
 </script>
 
 <nav>
-  <a href="/">Home</a>
-  <a href="/about">FAQ</a>
-  <button type="button" on:click={openFeedback}>Feedback</button>
-  <a href="/">Suggest a site</a>
+  <div class="nav-spacer"></div>
+  <div class="brand">ForkForest ↟</div>
+  <div class="nav-links">
+    <a href="/">Home</a>
+    <a href="/about">FAQ</a>
+    <button type="button" on:click={openFeedback}>Feedback</button>
+    <button class="accent-button" type="button" on:click={openSuggestSite}>Suggest a site</button>
+  </div>
 </nav>
 
 {#if isFeedbackOpen}
@@ -30,9 +65,42 @@
     <div class="modal" role="dialog" aria-modal="true" aria-label="Feedback form" on:click|stopPropagation>
       <button class="close-button" type="button" on:click={closeFeedback} aria-label="Close feedback form">×</button>
       <h3>Send feedback</h3>
-      <form on:submit={handleSubmit}>
+      <form on:submit={handleFeedbackSubmit}>
         <label for="feedback-input">What would you like to share?</label>
         <input id="feedback-input" bind:value={feedbackMessage} placeholder="Tell us what you think" />
+        <label class="captcha" for="feedback-captcha">
+          <input id="feedback-captcha" type="checkbox" bind:checked={feedbackCaptchaChecked} />
+          <span>Leave this unchecked</span>
+        </label>
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+{/if}
+
+{#if $suggestSiteModalState.isOpen}
+  <div class="modal-backdrop" role="presentation" on:click={closeSuggestSite}>
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Suggest a site form" on:click|stopPropagation>
+      <button class="close-button" type="button" on:click={closeSuggestSite} aria-label="Close suggest a site form">×</button>
+      <h3>Suggest a site</h3>
+      <form on:submit={handleSuggestSiteSubmit}>
+        <label for="site-suggestion-input">Which site should we add?</label>
+        <input
+          id="site-suggestion-input"
+          value={$suggestSiteModalState.formValue}
+          on:input={(event) => suggestSiteModalState.update((state) => ({ ...state, formValue: event.currentTarget.value }))}
+          placeholder="e.g. www.example.com"
+        />
+        <label class="captcha" for="suggest-site-captcha">
+          <input
+            id="suggest-site-captcha"
+            type="checkbox"
+            checked={$suggestSiteModalState.captchaChecked}
+            on:change={(event) => suggestSiteModalState.update((state) => ({ ...state, captchaChecked: event.currentTarget.checked }))}
+          />
+          <span>Leave this unchecked</span>
+        </label>
         <button type="submit">Submit</button>
       </form>
     </div>
@@ -42,10 +110,39 @@
 <style>
   nav {
     display: flex;
-    justify-content: flex-end;
-    padding: 0.5rem 0;
+    align-items: center;
+    justify-content: space-between;
+    min-height: 3.2rem;
+    padding: 0.5rem 1rem;
     background: #333;
     font-family: 'Catamaran', sans-serif;
+  }
+
+  .nav-spacer {
+    flex: 1;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex: 1;
+  }
+
+  .brand {
+    color: #f4f2ec;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    font-size: 0.95rem;
+    text-align: center;
+    pointer-events: none;
+    margin: 0 1rem;
+    flex: 0 0 auto;
+    color: #317758;
+    font-size: 28px;
+    font-family: 'Courgette', cursive;
+    text-shadow: -1px -1px #222;
   }
 
   nav a,
@@ -61,7 +158,7 @@
     font: inherit;
   }
 
-  nav a:last-of-type {
+  .accent-button {
     background: #7cbc9f;
     color: #333;
     margin-right: 0.75rem;
@@ -107,6 +204,17 @@
     font-size: 0.95rem;
   }
 
+  .captcha {
+    position: absolute;
+    left: -9999px;
+    top: auto;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+  }
+
   input {
     padding: 0.6rem 0.7rem;
     border: 1px solid #ccc;
@@ -120,5 +228,18 @@
     border: 0;
     border-radius: 999px;
     padding: 0.45rem 0.85rem;
+  }
+
+  @media (max-width: 1068px) {
+    .brand {
+      order: 1;
+      color: #ff4d4d;
+    }
+    .nav-spacer {
+      order: 2;
+    }
+    .nav-links {
+      order: 3
+    }
   }
 </style>

@@ -73,7 +73,9 @@
 	section {
 		margin-top: 13%;
 
-		background: url('/img/noise.png');
+		 background-image:
+      linear-gradient(rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0)),
+      url('/img/noise.png');
 		color: #999;
 		display: flex;
 		position: relative;

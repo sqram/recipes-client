@@ -1,7 +1,7 @@
 <script>
   // @ts-nocheck
   import { onMount } from 'svelte';
-  import { isSidepanelVisible, sites } from '../stores';
+  import { isSidepanelVisible, sites, openSuggestSiteModal } from '../stores';
   import SearchInput from '../components/SearchInput.svelte';
   import SiteRecipesContainer from '../components/SiteRecipesContainer.svelte';
   import SidePanel from '../components/SidePanel.svelte';
@@ -20,13 +20,13 @@
 </script>
 
 <main class="page-content">
-  <h1>Recipes from the best sites, in one place.</h1>
+  <h1>Recipes from the best food sites, in one place.</h1>
 
   <article class="search-section">
     <div class="ribbon-container"></div>
     <p>
       search the most popular websites for your favorite recipes. Don't see your favorite site?
-      <a href="#">suggest it!</a>
+      <a href="#" on:click|preventDefault={openSuggestSiteModal}>suggest it!</a>
     </p>
     <SearchInput />
   </article>
@@ -44,7 +44,7 @@
     <SidePanel />
   {/if}
 
-  <section class="search-results" class:dimmed={$isSidepanelVisible}>
+  <section class="search-results">
     {#each $sites as site}
       {#if site.isChecked}
         {#if site.isFetching}
@@ -118,8 +118,8 @@
     transition: opacity 0.2s ease;
   }
 
-  .search-results.dimmed {
-    opacity: 0.8;
+  /* .search-results.dimmed {
+    opacity: 0.95;
     filter: brightness(0.8);
-  }
+  } */
 </style>
