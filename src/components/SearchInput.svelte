@@ -3,15 +3,27 @@
   import { sites } from "../stores";
 
   let searchTerm = ""
-
-  const fetchRecipe = i => new Promise(resolve => {
+  const fetchRecipe = async (i) => {
+    $sites[i].isFetching = true;
+    const response = await fetch(`http://localhost:3001/recipe/${$sites[i].siteId}?search=${searchTerm}`)
+    const data = await response.json()
+    console.log(data)
+    $sites[i].isFetching = false
+    $sites[i].error = data.error ?? null
+    $sites[i].recipes = data.recipes.error ? [] : data.recipes 
+  }
+  // todo remove
+  const fr = i => new Promise(resolve => {
     $sites[i].isFetching = true;
     const response = fetch(`http://localhost:3001/recipe/${$sites[i].siteId}?search=${searchTerm}`)
     .then(data => data.json())
     .then(data => {
+    
       console.log(data)
       $sites[i].isFetching = false
-      $sites[i].recipes = data.recipes
+      $sites[i].error = data.error ?? null
+      $sites[i].recipes = data.recipes ?? []
+      console.log($sites[i])
     })
   });
 
@@ -36,7 +48,7 @@
   <h1>i want to cook:</h1>
   <label>
     <input type="text" placeholder='ie, banana bread' bind:value={searchTerm}>
-    <input type="submit" value="ok go">
+    <input type="submit" value="ok">
   </label>
 </form>
 

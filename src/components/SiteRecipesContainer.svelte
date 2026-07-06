@@ -1,7 +1,7 @@
 <script>
 	// @ts-nocheck
 
-	import { currentRecipe, isSidepanelVisible, sites } from '../stores';
+	import { activeImage, currentRecipe, isSidepanelVisible, sites } from '../stores';
 
 
 	/**
@@ -9,21 +9,35 @@
 	 * of a website, since a website may have multiple recipes
 	 */
 
-	export let result;
+	export let result; // this is how you pass props in svelte.
 
 	//$: recipes = $searchResults
 	$: sr = $sites.map(site => site.recipes)
-	console.log(sr)
+	
 	function handleOnClick(e) {
-		const id = e.target.dataset.id;
-		let recipe =  $sites.map(site => site.recipes)
+		const id = e.currentTarget?.dataset?.id;
+		const recipe = $sites
+			.map((site) => site.recipes)
 			.flat()
-			.find((r) => r.id === id);
+			.find((r) => parseInt(r.id) === parseInt(id));
+
+		if (!recipe) {
+			console.warn('No recipe found for id:', id);
+			return;
+		}
+
 		$currentRecipe = { ...recipe };
+		activeImage.set(null);
 		isSidepanelVisible.set(true);
-		console.log(recipe)
 	}
 </script>
+
+{#if result.error}
+		<div class="error">
+			<span>⚠</span>
+			<span>{result.error}</span>
+		</div>
+{:else if result.recipes?.length}
 
 <section>
 
@@ -34,19 +48,15 @@
 			<!-- svelte-ignore a11y-click-events-have-key-events -->
 			<article class="recipe-wrap" on:click={handleOnClick} data-id={recipe.id}>
 				<div class="thumb">
-					<img src={recipe.images[0]} alt="recipe image" />
+					<img src={recipe.images[0]} alt={recipe.title} />
 				</div>
         <div class="info-area">
           <div class="title">{recipe.title}</div>
           <div class="info">
               <div class="times">
-								{#each recipe.times as time}
                 <div>
-									{#each time as text}
-										<span>{text}</span>
-									{/each}
+										<span>{recipe.time}</span>
 								</div>
-								{/each}
               </div>
               <div class="servings-wrap">
                 <span>Servings:</span>
@@ -58,7 +68,7 @@
 		{/each}
 	</div>
 </section>
-
+{/if}
 <style lang="scss">
 	section {
 		margin-top: 13%;
@@ -138,5 +148,12 @@
   .times > div > span:nth-child(2), .servings-wrap > span:last-child {
     color: #eee;
   }
+
+	.error {
+		border: 1px dashed #333;
+		padding: 15px;
+		text-align: center;
+		background: #ffeeee
+	}
 
 </style>

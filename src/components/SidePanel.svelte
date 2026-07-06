@@ -1,32 +1,19 @@
 <script>
-import {afterUpdate, beforeUpdate, onDestroy, onMount, tick} from 'svelte';
-
-
 // @ts-nocheck
 
-  import { currentRecipe, isSidepanelVisible } from "../stores";
+  import { fly } from 'svelte/transition';
+  import { activeImage, currentRecipe, isSidepanelVisible } from "../stores";
 
-  let activeImg = null
   function handleCloseClick() {
+    activeImage.set(null)
     $isSidepanelVisible = false
   }
 
-  async function handleThumbnailClick(e) {
-    await tick();
-    activeImg = e.target.src
+  function handleThumbnailClick(e) {
+    activeImage.set(e.currentTarget?.src ?? e.target?.src ?? null)
   }
-  beforeUpdate(async () =>   {
-    console.log('before update: ' + activeImg)
-    activeImg = null
-  })
-
-  afterUpdate(async () =>   {
-    console.log('AFTER update ' + activeImg)
-
-  })
-
 </script>
-<div class="sidepanel">
+<div class="sidepanel" in:fly={{ x: 400, duration: 500 }} out:fly={{ x: 400, duration: 300 }}>
   <!-- svelte-ignore a11y-click-events-have-key-events -->
   <span class="close" on:click={handleCloseClick}>close</span>
   <div class="title">{ $currentRecipe.title}</div>
@@ -36,16 +23,12 @@ import {afterUpdate, beforeUpdate, onDestroy, onMount, tick} from 'svelte';
       <h3>Ingredients:</h3>
       <ul>
         {#each $currentRecipe?.ingredients ?? [] as ingredient}
-            {#if ingredient.type !== 'item'}
-             <li class="ingredientSection"><b>{ ingredient.value }</b></li>
-            {:else}
               <li class="item">
                 <label>
                   <input type="checkbox">
-                  { ingredient.value }
+                  { ingredient }
                 </label>
               </li>
-            {/if}
         {/each}
       </ul>
     </div>
@@ -69,9 +52,9 @@ import {afterUpdate, beforeUpdate, onDestroy, onMount, tick} from 'svelte';
         </div>
     </div>
 
-    {#if activeImg}
+    {#if $activeImage}
       <div class="original-size-img">
-        <img src={activeImg} alt="recipe pic">
+        <img src={$activeImage} alt="recipe pic">
       </div>
     {/if}
   </section>
@@ -89,9 +72,10 @@ import {afterUpdate, beforeUpdate, onDestroy, onMount, tick} from 'svelte';
     top: 0;
     border-left: 10px solid salmon;
     display: flex;
-    flex-direction: column;;
+    flex-direction: column;
     font-family: catamaran;
-    z-index: 1;
+    z-index: 1000;
+    box-shadow: -4px 0 18px rgba(0, 0, 0, 0.25);
   }
 
   section {
@@ -208,5 +192,13 @@ import {afterUpdate, beforeUpdate, onDestroy, onMount, tick} from 'svelte';
   }
   .original-size-img img {
     max-height: 400px;
+  }
+
+  div.instructions {
+    line-height: 2;
+  }
+
+  div.instructions > ul > li {
+    list-style: auto;
   }
 </style>
