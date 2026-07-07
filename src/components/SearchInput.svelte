@@ -1,8 +1,14 @@
 <script>
   // @ts-nocheck
+  import { onMount } from "svelte";
   import { sites } from "../stores";
 
-  const apiBase = 'https://forkforest.uw.r.appspot.com'
+  let apiBase = 'http://localhost:3001'
+  onMount(() => {
+     apiBase = window.location.href.includes('localhost') ? apiBase : 'https://forkforest.uw.r.appspot.com'
+  });
+
+ 
   let searchTerm = ""
   const fetchRecipe = async (i) => {
     $sites[i].isFetching = true;
