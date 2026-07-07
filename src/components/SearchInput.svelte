@@ -2,10 +2,11 @@
   // @ts-nocheck
   import { sites } from "../stores";
 
+  const apiBase = 'https://forkforest.uw.r.appspot.com'
   let searchTerm = ""
   const fetchRecipe = async (i) => {
     $sites[i].isFetching = true;
-    const response = await fetch(`http://localhost:3001/recipe/${$sites[i].siteId}?search=${searchTerm}`)
+    const response = await fetch(`${apiBase}/recipe/${$sites[i].siteId}?search=${searchTerm}`)
     const data = await response.json()
     console.log(data)
     $sites[i].isFetching = false
@@ -15,7 +16,7 @@
   // todo remove
   const fr = i => new Promise(resolve => {
     $sites[i].isFetching = true;
-    const response = fetch(`http://localhost:3001/recipe/${$sites[i].siteId}?search=${searchTerm}`)
+    const response = fetch(`${apiBase}/recipe/${$sites[i].siteId}?search=${searchTerm}`)
     .then(data => data.json())
     .then(data => {
     
