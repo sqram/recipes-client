@@ -118,6 +118,15 @@
     transition: opacity 0.2s ease;
   }
 
+  @media (max-width: 800px) {
+    .search-section p {
+      display: none;
+    }
+    .ribbon-container {
+      background-position: left top, left 209px;
+    }
+  }
+
   /* .search-results.dimmed {
     opacity: 0.95;
     filter: brightness(0.8);

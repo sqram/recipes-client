@@ -95,4 +95,10 @@ input[type=submit] {
 input[type=submit]:hover {
   background: #d94f4f;
 }
+
+@media (max-width: 800px) {
+    form {
+      width: 100%;
+    }
+  }
 </style>
