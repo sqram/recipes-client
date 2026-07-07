@@ -8,25 +8,10 @@
     $sites[i].isFetching = true;
     const response = await fetch(`${apiBase}/recipe/${$sites[i].siteId}?search=${searchTerm}`)
     const data = await response.json()
-    console.log(data)
     $sites[i].isFetching = false
     $sites[i].error = data.error ?? null
     $sites[i].recipes = data.recipes.error ? [] : data.recipes 
   }
-  // todo remove
-  const fr = i => new Promise(resolve => {
-    $sites[i].isFetching = true;
-    const response = fetch(`${apiBase}/recipe/${$sites[i].siteId}?search=${searchTerm}`)
-    .then(data => data.json())
-    .then(data => {
-    
-      console.log(data)
-      $sites[i].isFetching = false
-      $sites[i].error = data.error ?? null
-      $sites[i].recipes = data.recipes ?? []
-      console.log($sites[i])
-    })
-  });
 
   function handleSubmit(e) {
     if (!searchTerm.trim().length) return;
