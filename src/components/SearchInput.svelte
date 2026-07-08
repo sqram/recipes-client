@@ -37,7 +37,7 @@
 
 <form on:submit={handleSubmit}>
   <!-- <h1>Search for a recipe:</h1> -->
-  <h1>i want to cook:</h1>
+  <h1>i want to make:</h1>
   <label>
     <input type="text" placeholder='e.g, banana bread' bind:value={searchTerm}>
     <input type="submit" value="ok">
