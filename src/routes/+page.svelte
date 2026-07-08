@@ -122,9 +122,6 @@
     .search-section p {
       display: none;
     }
-    .ribbon-container {
-      background-position: left top, left 209px;
-    }
   }
 
   /* .search-results.dimmed {

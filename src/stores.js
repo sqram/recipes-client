@@ -55,13 +55,5 @@ export const sites = writable([
     isChecked: true,
     isFetching: false,
     recipes: [],
-  },
-  {
-    name: "Food Network",
-    siteId: "foodnetwork",
-    isChecked: true,
-    isFetching: false,
-    recipes: [],
-    error: null
   }
 ])
